@@ -16,7 +16,7 @@ public class PointLight : MonoBehaviour {
 
         float midX = gen.xTileSize*(Mathf.Pow(2, gen.n) + 1)/2;
         float midZ = gen.zTileSize*(Mathf.Pow(2, gen.n) + 1)/2;
-        gameObject.transform.position = new Vector3(midX, gen.maxHeight + 1000, midZ);
+        gameObject.transform.position = new Vector3(midX, gen.maxHeight + midX*2, midZ);
         rotPoint = new Vector3(midX, 0, midZ);
     }
 

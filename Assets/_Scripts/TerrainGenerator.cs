@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Runtime.InteropServices;
+using UnityEngine.Networking.Match;
 
 public class TerrainGenerator : MonoBehaviour {
     [Header("Size Settings")]
-    [Range(1, 6)]
     public int n;
     public float xTileSize;
     public float zTileSize;
@@ -22,13 +22,13 @@ public class TerrainGenerator : MonoBehaviour {
     public int naturalizer;
     [Range(0f, 40f)]
     public float naturalLimit;
+    public float waterGurantee;
 
     [Header("Internal Usage")]
     public float[][] terrainArray;
 
     private int trueSize;
     private System.Random rand;
-    private PointLight pointLight;
 
     private float GR = 1.614f;
 
@@ -36,30 +36,37 @@ public class TerrainGenerator : MonoBehaviour {
         terrainArray = GenerateTerrainHeight(n, maxHeight, minHeight);
 
         float min = terrainArray[0][0];
+        float max = terrainArray[0][0];
         for(int i = 0; i < terrainArray.Length; i++)
-            for (int j = 0; j < terrainArray.Length; j++)
+            for (int j = 0; j < terrainArray.Length; j++) {
                 if (terrainArray[i][j] < min) {
                     min = terrainArray[i][j];
+                } else if (terrainArray[i][j] > max) {
+                    max = terrainArray[i][j];
                 }
+            }
 
         // gurantee water height
         Transform water = GameObject.FindObjectOfType<WaterGenerator>().gameObject.transform;
         if (water.position.y < min) {
-            water.position = new Vector3(water.position.x, water.position.y + 100, water.position.z);
+            water.position = new Vector3(water.position.x, min + (min+max)*waterGurantee, water.position.z);
         }
 
-        MeshFilter terrainMesh = gameObject.AddComponent<MeshFilter>();
-        terrainMesh.mesh = MeshGenerator.PlaneFromArray(terrainArray, xTileSize, zTileSize, minHeight, maxHeight);
-        MeshRenderer terrainRenderer = gameObject.AddComponent<MeshRenderer>();
+        Mesh[] meshArr = MeshGenerator.PlaneFromArray(terrainArray, xTileSize, zTileSize, minHeight, maxHeight);
+        for (int i = 0; i < meshArr.Length; i++) {
+            GameObject child = new GameObject();
+            child.AddComponent<TerrainHolder>();
+            child.name = "Terrain" + i.ToString();
+            child.transform.position = new Vector3();
+            child.transform.parent = this.gameObject.transform;
 
-        terrainRenderer.material.shader = Shader.Find("Custom/TerrainShader");
-        pointLight = FindObjectOfType<PointLight>().GetComponent<PointLight>();
-    }
+            MeshFilter terrainMesh = child.AddComponent<MeshFilter>();
+            terrainMesh.mesh = meshArr[i];
+            MeshRenderer terrainRenderer = child.AddComponent<MeshRenderer>();
+            terrainRenderer.material.shader = Shader.Find("Custom/TerrainShader");
+            child.GetComponent<TerrainHolder>().pointLight = FindObjectOfType<PointLight>().GetComponent<PointLight>();
+        }
 
-    void Update() {
-        MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
-        renderer.material.SetColor("_PointLightColor", pointLight.color);
-        renderer.material.SetVector("_PointLightPosition", pointLight.GetWorldPosition());
     }
 
     private float noise() {

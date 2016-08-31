@@ -23,7 +23,7 @@ public class WaterGenerator : MonoBehaviour {
 	    float[][] a = GenerateWaterHeight(2, waterHeight);
 
         MeshFilter waterMesh = gameObject.AddComponent<MeshFilter>();
-	    waterMesh.mesh = MeshGenerator.PlaneFromArray(a, xTileSize*size, zTileSize*size, 0, 0, true, Vector3.up, MeshGenerator.HexToColor("039be5", 120));
+	    waterMesh.mesh = MeshGenerator.PlaneFromArray(a, xTileSize*(size-1), zTileSize*(size-1), 0, 0, true, Vector3.up, MeshGenerator.HexToColor("039be5", 120))[0];
         MeshRenderer waterRenderer = gameObject.AddComponent<MeshRenderer>();
 
         waterRenderer.material.shader = Shader.Find("Custom/WaterShader");
