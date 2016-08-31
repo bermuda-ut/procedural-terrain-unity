@@ -2,45 +2,60 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Security.Policy;
 
 public class MeshGenerator : MonoBehaviour {
 
-    public static Mesh PlaneFromArray(float[][] t, float xSize, float zSize, float minHeight, float maxHeight, bool useCustom=false, Color customColor=new Color()) {
+public static Mesh PlaneFromArray(float[][] t, float xSize, float zSize, float minHeight, float maxHeight, bool useCustom=false, Vector3 normal = new Vector3(), Color c = new Color()) {
         Mesh m = new Mesh();
         m.name = "generatedMesh";
 
+        List<int> tList = new List<int>();
+        List<Color> cList = new List<Color>();
         List<Vector3> vList = new List<Vector3>();
+
+        // add verticies and triangles
+        int k = 0;
         for (int i = 0; i < t.Length - 1; i++) {
             for (int j = 0; j < t[i].Length - 1; j++) {
-                vList.Add(new Vector3(j*xSize, t[i][j], i*zSize));
-                vList.Add(new Vector3(j*xSize, t[i + 1][j], (i + 1)*zSize));
-                vList.Add(new Vector3((j + 1)*xSize, t[i][j + 1], i*zSize));
+                // verticies
+                Vector3 v1 = new Vector3(j*xSize, t[i][j], i*zSize);
+                Vector3 v2 = new Vector3(j*xSize, t[i + 1][j], (i + 1)*zSize);
+                Vector3 v3 = new Vector3((j + 1)*xSize, t[i][j + 1], i*zSize);
+                Vector3 v4 = new Vector3(xSize*j, t[i + 1][j], zSize*(i + 1));
+                Vector3 v5 = new Vector3(xSize*(j + 1), t[i + 1][j + 1], zSize*(i + 1));
+                Vector3 v6 = new Vector3(xSize*(j + 1), t[i][j + 1], zSize*i);
 
-                vList.Add(new Vector3(xSize*j, t[i + 1][j], zSize*(i + 1)));
-                vList.Add(new Vector3(xSize*(j + 1), t[i + 1][j + 1], zSize*(i + 1)));
-                vList.Add(new Vector3(xSize*(j + 1), t[i][j + 1], zSize*i));
+                vList.Add(v1);
+                vList.Add(v2);
+                vList.Add(v3);
+                vList.Add(v4);
+                vList.Add(v5);
+                vList.Add(v6);
+
+                // triangles
+                int a = k + 6;
+                for(; k < a; k++)
+                    tList.Add(k);
+
             }
         }
 
-        List<Color> cList = new List<Color>();
-        if(useCustom)
-            for(int i = 0; i < vList.Count; i++) {
-                cList.Add(customColor);
-            }
+        // add colours
+        if (useCustom)
+            for (int i = 0; i < vList.Count; i++)
+                cList.Add(c);
         else
-            foreach (Vector3 v in vList) {
+            foreach (Vector3 v in vList)
                 cList.Add(HeightColour(v, minHeight, maxHeight));
-            }
 
         m.vertices = vList.ToArray();
         m.colors = cList.ToArray();
+        m.triangles = tList.ToArray();
 
-        int[] triangles = new int[m.vertices.Length];
-
-        for (int i = 0; i < m.vertices.Length; i++)
-            triangles[i] = i;
-        m.triangles = triangles;
-
+        // add normals
+        m.RecalculateNormals();
 
         return m;
     }

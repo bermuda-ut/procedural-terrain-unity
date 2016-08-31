@@ -28,21 +28,44 @@ public class TerrainGenerator : MonoBehaviour {
 
     private int trueSize;
     private System.Random rand;
+    private PointLight pointLight;
+
+    private float GR = 1.614f;
 
     void Start () {
         terrainArray = GenerateTerrainHeight(n, maxHeight, minHeight);
+
+        float min = terrainArray[0][0];
+        for(int i = 0; i < terrainArray.Length; i++)
+            for (int j = 0; j < terrainArray.Length; j++)
+                if (terrainArray[i][j] < min) {
+                    min = terrainArray[i][j];
+                }
+
+        // gurantee water height
+        Transform water = GameObject.FindObjectOfType<WaterGenerator>().gameObject.transform;
+        if (water.position.y < min) {
+            water.position = new Vector3(water.position.x, water.position.y + 100, water.position.z);
+        }
 
         MeshFilter terrainMesh = gameObject.AddComponent<MeshFilter>();
         terrainMesh.mesh = MeshGenerator.PlaneFromArray(terrainArray, xTileSize, zTileSize, minHeight, maxHeight);
         MeshRenderer terrainRenderer = gameObject.AddComponent<MeshRenderer>();
 
         terrainRenderer.material.shader = Shader.Find("Custom/TerrainShader");
+        pointLight = FindObjectOfType<PointLight>().GetComponent<PointLight>();
+    }
+
+    void Update() {
+        MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
+        renderer.material.SetColor("_PointLightColor", pointLight.color);
+        renderer.material.SetVector("_PointLightPosition", pointLight.GetWorldPosition());
     }
 
     private float noise() {
         if(rand.NextDouble() < 0.5)
-            return (float) rand.NextDouble()*noiseRange;
-        return (float) rand.NextDouble()*noiseRange*-1.0f;
+            return (float) rand.NextDouble()*noiseRange*GR;
+        return (float) rand.NextDouble()*noiseRange*-GR;
     }
 	
     private float[][] GenerateTerrainHeight(int n, float maxHeight, float minHeight) {
@@ -63,9 +86,6 @@ public class TerrainGenerator : MonoBehaviour {
         t[size-1][size-1] = (float)rand.NextDouble() * (maxHeight - minHeight) + minHeight;
 
         FillDiamondSquare(t, t.Length);
-
-        // Naturalize Tip
-        //AddSquare(t, size/2, size/2, 1, true);
 
         // Naturalize extremes
         for (int i = 0; i < naturalizer; i++) {
@@ -90,17 +110,7 @@ public class TerrainGenerator : MonoBehaviour {
 
     private void FillDiamondSquare(float[][] t, int size) {
         int mid = size/2;
-        int trueSize = size;
-
-        // x . . . 2 . . . x  
-        // . . . . . . . . .  
-        // . . 1 . . . 1 . .  
-        // . . . . . . . . .  
-        // 2 . . . x . . . 2  
-        // . . . . . . . . .  
-        // . . . . . . . . .  
-        // . . . . . . . . .  
-        // x . . . 2 . . . x  
+        int trueSize = size; 
 
         while (mid >= 1) {
             for (int z = mid; z < trueSize; z += (mid*2)) {
@@ -152,7 +162,7 @@ public class TerrainGenerator : MonoBehaviour {
         }
 
         t[resPointz][resPointx] /= c;
-        t[resPointz][resPointx] += noise()/Mathf.Pow(2, trueSize-size-1);
+        t[resPointz][resPointx] += noise()/Mathf.Pow(2, trueSize - size - 1);
         t[resPointz][resPointx] += noise()/trueSize*size*roughness;
 
         if (t[resPointz][resPointx] > maxHeight)
@@ -190,7 +200,7 @@ public class TerrainGenerator : MonoBehaviour {
         }
 
         t[resPointz][resPointx] /= c;
-        t[resPointz][resPointx] += noise()/Mathf.Pow(2, trueSize-size-1);
+        t[resPointz][resPointx] += noise()/Mathf.Pow(2, trueSize - size - 1);
         t[resPointz][resPointx] += noise()/trueSize*size*roughness;
 
         if (t[resPointz][resPointx] > maxHeight)
@@ -199,20 +209,3 @@ public class TerrainGenerator : MonoBehaviour {
             t[resPointz][resPointx] = minHeight;
     }
 }
-
-//AddSquare(t, startx + mid/2, startz + mid/2, mid + 1, trueSize);
-//AddSquare(t, startx + 3*mid/2, startz + mid/2, mid + 1, trueSize);
-//AddSquare(t, startx + mid/2, startz + 3*mid/2, mid + 1, trueSize);
-//AddSquare(t, startx + 3*mid/2, startz + 3*mid/2, mid + 1, trueSize);
-
-// Stage 2
-//AddDiamond(t, startx + mid, startz, size, trueSize); // top
-//AddDiamond(t, startx + mid, startz + size - 1, size, trueSize); // bottom
-//AddDiamond(t, startx, startz + mid, size, trueSize); // left
-//AddDiamond(t, startx + size - 1, startz + mid, size, trueSize); // right
-
-// slice into 4 smaller squares and fill
-//FillDiamondSquare(t, mid + 1, startx, startz, trueSize);
-//FillDiamondSquare(t, mid + 1, startx, startz + mid, trueSize);
-//FillDiamondSquare(t, mid + 1, startx + mid, startz, trueSize);
-//FillDiamondSquare(t, mid + 1, startx + mid, startz + mid, trueSize);
