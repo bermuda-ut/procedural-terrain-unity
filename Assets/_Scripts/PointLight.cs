@@ -4,17 +4,15 @@ using System.Collections;
 public class PointLight : MonoBehaviour {
 
     public float rotationSpeed;
+    public float colorShift;
     public Color color;
 
     private TerrainGenerator gen;
     private Vector3 rotPoint;
 
-    public float curr;
-
     void Start() {
         GameObject terrain = GameObject.Find("GroundTerrain");
         gen = terrain.GetComponent<TerrainGenerator>();
-        curr = 0;
 
         float midX = gen.xTileSize*(Mathf.Pow(2, gen.n) + 1)/2;
         float midZ = gen.zTileSize*(Mathf.Pow(2, gen.n) + 1)/2;
@@ -24,14 +22,16 @@ public class PointLight : MonoBehaviour {
 
     void Update() {
         this.transform.RotateAround(rotPoint, Vector3.left, -rotationSpeed*Time.deltaTime);
-        curr = this.transform.localEulerAngles.x;
+        float curr = this.transform.localEulerAngles.x;
 
         if (curr > 180) {
-            color -= Color.red*0.001f;
-            color -= Color.yellow*0.001f;
+            color -= Color.red*colorShift*Time.deltaTime*2;
+            color -= Color.yellow*colorShift*Time.deltaTime;
+            color += Color.blue*colorShift*Time.deltaTime;
         } else {
-            color += Color.red*0.001f;
-            color += Color.yellow*0.001f;
+            color += Color.red*colorShift*Time.deltaTime*2;
+            color += Color.yellow*colorShift*Time.deltaTime;
+            color -= Color.blue*colorShift*Time.deltaTime;
         }
     }
 
