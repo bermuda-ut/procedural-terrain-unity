@@ -48,8 +48,9 @@ public class TerrainGenerator : MonoBehaviour {
 
         // gurantee water height
         Transform water = GameObject.FindObjectOfType<WaterGenerator>().gameObject.transform;
+        min = min + (min + max)*waterGurantee;
         if (water.position.y < min) {
-            water.position = new Vector3(water.position.x, min + (min+max)*waterGurantee, water.position.z);
+            water.position = new Vector3(water.position.x, min, water.position.z);
         }
 
         Mesh[] meshArr = MeshGenerator.PlaneFromArray(terrainArray, xTileSize, zTileSize, minHeight, maxHeight);
@@ -169,7 +170,7 @@ public class TerrainGenerator : MonoBehaviour {
         }
 
         t[resPointz][resPointx] /= c;
-        t[resPointz][resPointx] += noise()/Mathf.Pow(2, trueSize - size - 1);
+        t[resPointz][resPointx] += noise()/Mathf.Pow(GR, trueSize - size - 1)*Mathf.PerlinNoise(resPointx, resPointz);
         t[resPointz][resPointx] += noise()/trueSize*size*roughness;
 
         if (t[resPointz][resPointx] > maxHeight)
@@ -207,7 +208,7 @@ public class TerrainGenerator : MonoBehaviour {
         }
 
         t[resPointz][resPointx] /= c;
-        t[resPointz][resPointx] += noise()/Mathf.Pow(2, trueSize - size - 1);
+        t[resPointz][resPointx] += noise()/Mathf.Pow(GR, trueSize - size - 1)*Mathf.PerlinNoise(resPointx, resPointz);
         t[resPointz][resPointx] += noise()/trueSize*size*roughness;
 
         if (t[resPointz][resPointx] > maxHeight)

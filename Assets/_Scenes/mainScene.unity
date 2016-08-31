@@ -116,11 +116,11 @@ MonoBehaviour:
   xTileSize: 5
   zTileSize: 5
   maxHeight: 1018
-  minHeight: -609
-  noiseRange: 110
-  roughness: 1.618
-  naturalizer: 1
-  naturalLimit: 15
+  minHeight: -618
+  noiseRange: 108
+  roughness: 1.85
+  naturalizer: 2
+  naturalLimit: 6
   waterGurantee: 0.1618
 --- !u!4 &14217792
 Transform:
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 10
   colorShift: 0.08
-  color: {r: 0.8235294, g: 0.8235294, b: 0.541, a: 0}
+  color: {r: 0.74509805, g: 0.74509805, b: 0.366, a: 1}
 --- !u!23 &161886541
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -334,8 +334,8 @@ MonoBehaviour:
   vertTurnSpeed: 3
   rollSpeed: 2
   cameraYOffset: 10
-  cameraZOffset: 10
-  cameraXOffset: 10
+  cameraZOffset: 5
+  cameraXOffset: 5
   terrain: {fileID: 14217790}
 --- !u!1 &1171718914
 GameObject:

@@ -25,13 +25,13 @@ public class PointLight : MonoBehaviour {
         float curr = this.transform.localEulerAngles.x;
 
         if (curr > 180) {
-            color -= Color.red*colorShift*Time.deltaTime*2;
+            color -= Color.red*colorShift*Time.deltaTime*1.614f;
             color -= Color.yellow*colorShift*Time.deltaTime;
-            color += Color.blue*colorShift*Time.deltaTime;
+            color += Color.blue*colorShift*Time.deltaTime*2.614f;
         } else {
-            color += Color.red*colorShift*Time.deltaTime*2;
+            color += Color.red*colorShift*Time.deltaTime*1.614f;
             color += Color.yellow*colorShift*Time.deltaTime;
-            color -= Color.blue*colorShift*Time.deltaTime;
+            color -= Color.blue*colorShift*Time.deltaTime*2.614f;
         }
     }
 
