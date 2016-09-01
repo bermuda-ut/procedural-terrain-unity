@@ -50,7 +50,6 @@ public class MeshGenerator : MonoBehaviour {
                     int a = k + 6;
                     for (; k < a; k++)
                         tList.Add(k);
-
                 }
             }
 

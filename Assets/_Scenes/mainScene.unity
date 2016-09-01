@@ -168,7 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationSpeed: 10
   colorShift: 0.08
-  color: {r: 0.74509805, g: 0.74509805, b: 0.366, a: 1}
+  color: {r: 1, g: 1, b: 0.741, a: 1}
 --- !u!23 &161886541
 MeshRenderer:
   m_ObjectHideFlags: 0

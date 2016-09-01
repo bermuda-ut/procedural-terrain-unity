@@ -25,14 +25,13 @@ public class PointLight : MonoBehaviour {
         float curr = this.transform.localEulerAngles.x;
 
         if (curr > 180) {
-            color -= Color.red*colorShift*Time.deltaTime*1.614f;
+            color -= Color.red*colorShift*Time.deltaTime*1.114f;
             color -= Color.yellow*colorShift*Time.deltaTime;
-            color += Color.blue*colorShift*Time.deltaTime*2.614f;
         } else {
-            color += Color.red*colorShift*Time.deltaTime*1.614f;
+            color += Color.red*colorShift*Time.deltaTime*1.114f;
             color += Color.yellow*colorShift*Time.deltaTime;
-            color -= Color.blue*colorShift*Time.deltaTime*2.614f;
         }
+        color = Vector4.Normalize(color);
     }
 
     public Vector3 GetWorldPosition() {

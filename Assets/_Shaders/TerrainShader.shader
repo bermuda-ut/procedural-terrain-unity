@@ -55,14 +55,14 @@
 				float Ka = 1;
 				float3 amb = v.color.rgb * UNITY_LIGHTMODEL_AMBIENT.rgb * Ka;
 
-				float fAtt = 0.8;
+				float fAtt = 1;
 				float Kd = 1;
 				float3 L = normalize(_PointLightPosition - v.worldVertex.xyz);
 				float LdotN = dot(L, v.worldNormal.xyz);
 				float3 dif = fAtt * _PointLightColor.rgb * Kd * v.color.rgb * saturate(LdotN);
 
 				// Calculate specular reflections
-				float Ks = 0.4;
+				float Ks = 0.9;
 				float specN = 1; // Values>>1 give tighter highlights
 				float3 V = normalize(_WorldSpaceCameraPos - v.worldVertex.xyz);
 				float3 R = 2 * dot(L, v.worldNormal) * v.worldNormal - L;
