@@ -12,8 +12,6 @@ public class PlayerController : MonoBehaviour {
     public float vertTurnSpeed;
     public float rollSpeed;
     public float cameraYOffset;
-    public float cameraZOffset;
-    public float cameraXOffset;
 
     public GameObject terrain;
 
@@ -58,8 +56,8 @@ public class PlayerController : MonoBehaviour {
         float y = 0f;
         int size = gen.terrainArray.Length;
 
-        float zRaw = (pos.z + cameraZOffset)/gen.zTileSize;
-        float xRaw = (pos.x + cameraXOffset)/gen.xTileSize;
+        float zRaw = pos.z/gen.zTileSize;
+        float xRaw = pos.x/gen.xTileSize;
         int zSlot = Mathf.FloorToInt(zRaw);
         int xSlot = Mathf.FloorToInt(xRaw);
         float zFactor = zRaw - zSlot;

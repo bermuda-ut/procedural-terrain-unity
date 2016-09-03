@@ -117,11 +117,13 @@ MonoBehaviour:
   zTileSize: 5
   maxHeight: 1018
   minHeight: -618
-  noiseRange: 108
-  roughness: 1.82
+  noiseRange: 190
+  roughness: 1.54
   naturalizer: 2
   naturalLimit: 0.125
   waterGurantee: 0.1618
+  islandMode: 0
+  islandTip: 250
 --- !u!4 &14217792
 Transform:
   m_ObjectHideFlags: 0
@@ -334,8 +336,6 @@ MonoBehaviour:
   vertTurnSpeed: 3
   rollSpeed: 2
   cameraYOffset: 5
-  cameraZOffset: 0
-  cameraXOffset: 0
   terrain: {fileID: 14217790}
 --- !u!1 &1171718914
 GameObject:

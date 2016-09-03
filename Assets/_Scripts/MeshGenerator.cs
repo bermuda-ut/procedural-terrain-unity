@@ -9,16 +9,16 @@ public class MeshGenerator : MonoBehaviour {
     private static int vertexLimit = 64000;
 
     public static Mesh[] PlaneFromArray(float[][] t, float xSize, float zSize, float minHeight, float maxHeight, bool useCustom=false, Vector3 normal = new Vector3(), Color c = new Color()) {
-        int total = t.Length * t[0].Length * 6;
+        int total = t.Length * t[0].Length;
         int meshCount = (int) (total/vertexLimit) + 1;
         Mesh[] mArr= new Mesh[meshCount+1];
 
-        int breakLeap = (int) t.Length / meshCount;
+        int breakLeap = (int) (t.Length/meshCount);
         int breakIndex = 0;
 
         int i = 0;
         for (int z = 0; z < meshCount+1; z++) {
-            breakIndex = (breakLeap + breakIndex > t.Length - 1) ? t.Length - 1 : breakLeap + breakIndex;
+            breakIndex = (breakLeap + breakIndex > t.Length) ? t.Length : breakLeap + breakIndex;
             mArr[z] = new Mesh();
 
             Mesh m = mArr[z];
@@ -29,30 +29,24 @@ public class MeshGenerator : MonoBehaviour {
             List<Vector3> vList = new List<Vector3>();
 
             // add verticies and triangles
-            int k = 0;
-            for (; i < breakIndex; i++) {
-                for (int j = 0; j < t[i].Length - 1; j++) {
+            for (int k = 0; i < breakIndex; i++, k++) {
+                for (int j = 0; j < t[i].Length; j++) {
                     // verticies
-                    Vector3 v1 = new Vector3(j * xSize, t[i][j], i * zSize);
-                    Vector3 v2 = new Vector3(j * xSize, t[i + 1][j], (i + 1) * zSize);
-                    Vector3 v3 = new Vector3((j + 1) * xSize, t[i][j + 1], i * zSize);
-                    Vector3 v4 = new Vector3(xSize * j, t[i + 1][j], zSize * (i + 1));
-                    Vector3 v5 = new Vector3(xSize * (j + 1), t[i + 1][j + 1], zSize * (i + 1));
-                    Vector3 v6 = new Vector3(xSize * (j + 1), t[i][j + 1], zSize * i);
-
-                    vList.Add(v1);
-                    vList.Add(v2);
-                    vList.Add(v3);
-                    vList.Add(v4);
-                    vList.Add(v5);
-                    vList.Add(v6);
+                    vList.Add(new Vector3(j*xSize, t[i][j], i*zSize));
 
                     // triangles
-                    int a = k + 6;
-                    for (; k < a; k++)
-                        tList.Add(k);
+                    if (j < t[i].Length - 1 && i < breakIndex - 1) {
+                        tList.Add(k*t[i].Length + j);
+                        tList.Add((k + 1)*t[i].Length + j);
+                        tList.Add(k*t[i].Length + j + 1);
+
+                        tList.Add((k + 1)*t[i].Length + j);
+                        tList.Add((k + 1)*t[i].Length + j + 1);
+                        tList.Add(k*t[i].Length + j + 1);
+                    }
                 }
             }
+            i--;
 
             // add colours
             if (useCustom)
@@ -66,7 +60,7 @@ public class MeshGenerator : MonoBehaviour {
             m.colors = cList.ToArray();
             m.triangles = tList.ToArray();
 
-            // add normals (surface normal)
+            // add normals
             m.RecalculateNormals();
         }
 

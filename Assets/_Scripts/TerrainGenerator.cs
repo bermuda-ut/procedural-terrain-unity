@@ -21,10 +21,13 @@ public class TerrainGenerator : MonoBehaviour {
     [Range(0f, 0.5f)]
     public float naturalLimit;
 
-    [Header("Extra")]
+    [Header("Water Link")]
     public float waterGurantee;
 
-    [Header("Internal Usage")]
+    [Header("Experimental")]
+    public bool islandMode;
+    public float islandTip;
+
     public float[][] terrainArray;
 
     private int trueSize;
@@ -88,10 +91,18 @@ public class TerrainGenerator : MonoBehaviour {
             t[i] = new float[size];
 
         // initial fill
-        t[0][0] = (float)rand.NextDouble() * (maxHeight - minHeight) + minHeight;
-        t[size-1][0] = (float)rand.NextDouble() * (maxHeight - minHeight) + minHeight;
-        t[0][size-1] = (float)rand.NextDouble() * (maxHeight - minHeight) + minHeight;
-        t[size-1][size-1] = (float)rand.NextDouble() * (maxHeight - minHeight) + minHeight;
+
+        if (islandMode) {
+            t[0][0] = (float) rand.NextDouble()*minHeight;
+            t[size - 1][0] = (float) rand.NextDouble()*minHeight;
+            t[0][size - 1] = (float) rand.NextDouble()*minHeight;
+            t[size - 1][size - 1] = (float) rand.NextDouble()*minHeight;
+        } else {
+            t[0][0] = (float)rand.NextDouble() * (maxHeight - minHeight) + minHeight;
+            t[size-1][0] = (float)rand.NextDouble() * (maxHeight - minHeight) + minHeight;
+            t[0][size-1] = (float)rand.NextDouble() * (maxHeight - minHeight) + minHeight;
+            t[size-1][size-1] = (float)rand.NextDouble() * (maxHeight - minHeight) + minHeight;
+        }
 
         FillDiamondSquare(t, t.Length);
 
@@ -124,6 +135,8 @@ public class TerrainGenerator : MonoBehaviour {
             for (int z = mid; z < trueSize; z += (mid*2)) {
                 for (int x = mid; x < trueSize; x += (mid*2)) {
                     AddSquare(t, x, z, size);
+                    if (trueSize == size && islandMode)
+                        t[x][z] = islandTip;
                 }
             }
 
