@@ -118,9 +118,9 @@ MonoBehaviour:
   maxHeight: 1018
   minHeight: -618
   noiseRange: 108
-  roughness: 1.85
+  roughness: 1.82
   naturalizer: 2
-  naturalLimit: 6
+  naturalLimit: 0.125
   waterGurantee: 0.1618
 --- !u!4 &14217792
 Transform:
@@ -333,9 +333,9 @@ MonoBehaviour:
   horzTurnSpeed: 3
   vertTurnSpeed: 3
   rollSpeed: 2
-  cameraYOffset: 10
-  cameraZOffset: 5
-  cameraXOffset: 5
+  cameraYOffset: 5
+  cameraZOffset: 0
+  cameraXOffset: 0
   terrain: {fileID: 14217790}
 --- !u!1 &1171718914
 GameObject:

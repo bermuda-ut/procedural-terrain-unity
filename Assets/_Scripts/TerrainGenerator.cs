@@ -16,12 +16,12 @@ public class TerrainGenerator : MonoBehaviour {
     public float noiseRange;
     [Range(0f, 2f)]
     public float roughness;
-
-    [Header("Extra")]
     [Range(0, 5)]
     public int naturalizer;
-    [Range(0f, 40f)]
+    [Range(0f, 0.5f)]
     public float naturalLimit;
+
+    [Header("Extra")]
     public float waterGurantee;
 
     [Header("Internal Usage")]
@@ -48,7 +48,7 @@ public class TerrainGenerator : MonoBehaviour {
 
         // gurantee water height
         Transform water = GameObject.FindObjectOfType<WaterGenerator>().gameObject.transform;
-        min = min + (min + max)*waterGurantee;
+        min = min + (max - min)*waterGurantee;
         if (water.position.y < min) {
             water.position = new Vector3(water.position.x, min, water.position.z);
         }
@@ -70,8 +70,8 @@ public class TerrainGenerator : MonoBehaviour {
 
     }
 
-    private float noise() {
-        if(rand.NextDouble() < 0.5)
+    private float noise(bool abs = false) {
+        if(abs || rand.NextDouble() < 0.5)
             return (float) rand.NextDouble()*noiseRange*GR;
         return (float) rand.NextDouble()*noiseRange*-GR;
     }

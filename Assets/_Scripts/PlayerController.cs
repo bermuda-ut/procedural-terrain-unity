@@ -54,18 +54,14 @@ public class PlayerController : MonoBehaviour {
     }
 
     float getTerrainY(Vector3 pos, Vector3 move) {
-        pos += move.normalized;
+        pos += move;
         float y = 0f;
-        float zRaw = (pos.z + cameraZOffset) / gen.zTileSize;
-        float xRaw = (pos.x + cameraXOffset) / gen.xTileSize;
+        int size = gen.terrainArray.Length;
+
+        float zRaw = (pos.z + cameraZOffset)/gen.zTileSize;
+        float xRaw = (pos.x + cameraXOffset)/gen.xTileSize;
         int zSlot = Mathf.FloorToInt(zRaw);
         int xSlot = Mathf.FloorToInt(xRaw);
-        int size = gen.terrainArray.Length;
-        xSlot = (xSlot < 0) ? 0 : xSlot;
-        zSlot = (zSlot < 0) ? 0 : zSlot;
-        xSlot = (xSlot >= size) ? size-1 : xSlot;
-        zSlot = (zSlot >= size) ? size-1 : zSlot;
-
         float zFactor = zRaw - zSlot;
         float xFactor = xRaw - xSlot;
 
@@ -73,7 +69,7 @@ public class PlayerController : MonoBehaviour {
             float baseX = (gen.terrainArray[zSlot][xSlot + 1] - gen.terrainArray[zSlot][xSlot])*xFactor +
                           gen.terrainArray[zSlot][xSlot];
             float zX = (gen.terrainArray[zSlot + 1][xSlot + 1] - gen.terrainArray[zSlot + 1][xSlot])*xFactor +
-                       gen.terrainArray[zSlot][xSlot];
+                       gen.terrainArray[zSlot + 1][xSlot];
             y = (zX - baseX)*zFactor + baseX;
         } else {
             y = gen.terrainArray[zSlot][xSlot];

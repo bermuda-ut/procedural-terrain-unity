@@ -10,18 +10,19 @@ public class MeshGenerator : MonoBehaviour {
 
     public static Mesh[] PlaneFromArray(float[][] t, float xSize, float zSize, float minHeight, float maxHeight, bool useCustom=false, Vector3 normal = new Vector3(), Color c = new Color()) {
         int total = t.Length * t[0].Length * 6;
-        int meshCount = (int)(total/vertexLimit) + 1;
-        Mesh[] mArr= new Mesh[meshCount];
+        int meshCount = (int) (total/vertexLimit) + 1;
+        Mesh[] mArr= new Mesh[meshCount+1];
 
         int breakLeap = (int) t.Length / meshCount;
-        int breakIndex = (breakLeap > t.Length-1) ? t.Length - 1 : breakLeap;
+        int breakIndex = 0;
 
         int i = 0;
-        for (int z = 0; z < meshCount; z++) {
+        for (int z = 0; z < meshCount+1; z++) {
+            breakIndex = (breakLeap + breakIndex > t.Length - 1) ? t.Length - 1 : breakLeap + breakIndex;
             mArr[z] = new Mesh();
 
             Mesh m = mArr[z];
-            m.name = "GeneratedMesh_" + z.ToString();
+            m.name = "GeneratedMesh_" + z;
 
             List<int> tList = new List<int>();
             List<Color> cList = new List<Color>();
@@ -65,10 +66,8 @@ public class MeshGenerator : MonoBehaviour {
             m.colors = cList.ToArray();
             m.triangles = tList.ToArray();
 
-            // add normals
+            // add normals (surface normal)
             m.RecalculateNormals();
-
-            breakIndex = (breakLeap + breakIndex > t.Length-1) ? t.Length-1 : breakLeap + breakIndex;
         }
 
         return mArr;
