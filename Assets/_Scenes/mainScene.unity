@@ -117,8 +117,8 @@ MonoBehaviour:
   zTileSize: 5
   maxHeight: 1018
   minHeight: -618
-  noiseRange: 190
-  roughness: 1.54
+  noiseRange: 182
+  roughness: 1.7
   naturalizer: 2
   naturalLimit: 0.125
   waterGurantee: 0.1618
