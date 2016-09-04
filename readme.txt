@@ -12,11 +12,12 @@ Implementation Steps:
 	4. 'Naturalize' the slope to smoothen out the ground
 	5. Set the water height appropriately
 	6. Pass on array to mesh generator. It will divide up the array into appropriate number of meshes,
-	   then generates the verticies and triangles, then calculates normal using Unity's built-in
-	   method for Mesh. Completed array of meshes are returned.
+	   then generates the verticies, normals and triangles. Completed array of meshes are returned.
 	7. Array of meshes are applied to the children.
 
-Phong shader and directional light used is from the lab tutorial sessions.
-The light also rises and sets like the sun with colour change.
+NOTE:
+	Phong shader and directional light used is from the lab tutorial sessions.
+	The light also rises and sets like the sun with colour change.
+	Mesh normals are vertex normals.
 
 All parameters are customizable through Unity Inspector.
