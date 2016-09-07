@@ -2,7 +2,7 @@ Procedural Terrain Generation in Unity
 Student ID: 719577
 
 Implementation Steps:
-	1. Generate random seed according to system time. Create an SIZE * SIZE float array
+	1. Generate random seed according to system time. Create an SIZE * SIZE float array. SIZE = 2n + 1.
 	2. Randomize 4 corner values of the terrain
 	3. Fill the squares in diamond-square steps. 2 noise values are added.
 		1. Slopeness: random noise * 2^(-n) * Unity's Perlin Noise
