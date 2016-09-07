@@ -66,6 +66,7 @@ public class MeshGenerator : MonoBehaviour {
             m.colors = cList.ToArray();
             m.triangles = tList.ToArray();
             m.normals = nList.ToArray();
+            m.RecalculateBounds();
         }
 
         return mArr;

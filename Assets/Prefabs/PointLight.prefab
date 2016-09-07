@@ -77,7 +77,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 10
-  colorShift: 0.08
+  colorShift: 0.16
   color: {r: 1, g: 1, b: 0.741, a: 1}
 --- !u!135 &13533012
 SphereCollider:

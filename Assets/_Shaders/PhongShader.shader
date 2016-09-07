@@ -60,21 +60,10 @@ Shader "Custom/PhongShader" {
 			vertOut vert(vertIn v) {
 				vertOut o;
 
-				// Convert Vertex position and corresponding normal into world coords
-				// Note that we have to multiply the normal by the transposed inverse of the world 
-				// transformation matrix (for cases where we have non-uniform scaling; we also don't
-				// care about the "fourth" dimension, because translations don't affect the normal) 
-				float4 worldVertex = mul(_Object2World, v.vertex);
-				float3 worldNormal = normalize(mul(transpose((float3x3)_World2Object), v.normal.xyz));
-
-				// Transform vertex in world coordinates to camera coordinates, and pass colour
+				o.worldVertex = mul(_Object2World, v.vertex);
+				o.worldNormal = normalize(mul(transpose((float3x3)_World2Object), v.normal.xyz));
 				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 				o.color = v.color;
-
-				// Pass out the world vertex position and world normal to be interpolated
-				// in the fragment shader (and utilised)
-				o.worldVertex = worldVertex;
-				o.worldNormal = worldNormal;
 
 				return o;
 			}
@@ -88,13 +77,10 @@ Shader "Custom/PhongShader" {
 				float Ka = 1;
 				float3 amb = v.color.rgb * UNITY_LIGHTMODEL_AMBIENT.rgb * Ka;
 
-				float3 dif = 0;
-				float3 spe = 0;
-				float3 lightDirection;
+				float3 dif = float3(0,0,0);
+				float3 spe = float3(0,0,0);
 
-				float fAtt = 1;
 				float Kd = 1;
-
 				float Ks = 1;
 				float specN = 5; // Values>>1 give tighter highlights
 
@@ -103,18 +89,21 @@ Shader "Custom/PhongShader" {
 				for (int i = 0; i < 10; i++) {
 					// Calculate diffuse RBG reflections, we save the results of L.N because we will use it again
 					// (when calculating the reflected ray in our specular component)
-					float3 L = normalize(_PointLightPosition[i] - v.worldVertex.xyz);
+					float3 rawL = _PointLightPosition[i] - v.worldVertex.xyz;
+					float3 L = normalize(rawL);
 					float LdotN = dot(L, interpNormal);
+					float fAtt = 1.0;// / length(rawL);
+
 					dif += fAtt * _PointLightColor[i].rgb * Kd * v.color.rgb * saturate(LdotN);
 
-					// point or spot light
-					float3 vectorToLight = _PointLightPosition[i].xyz - v.worldVertex.xyz;
-					lightDirection = normalize(vectorToLight);
-
-					// light source on the correct side
 					float3 V = normalize(_WorldSpaceCameraPos - v.worldVertex.xyz);
 					float3 H = normalize(V + L);
+
+
 					spe += fAtt * _PointLightColor[i].rgb * Ks * pow(saturate(dot(interpNormal, H)), specN);
+					// light source on the correct side
+					//if (dot(interpNormal, L) >= 0.0) {
+					//}
 				}
 
 				// Combine Phong illumination model components
@@ -140,6 +129,9 @@ Shader "Custom/PhongShader" {
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 
+			uniform float3 _PointLightColor[10];
+			uniform float3 _PointLightPosition[10];
+
 			struct vertIn {
 				float4 vertex : POSITION;
 				float4 normal : NORMAL;
@@ -157,17 +149,10 @@ Shader "Custom/PhongShader" {
 			vertOut vert(vertIn v) {
 				vertOut o;
 
-				float4 worldVertex = mul(_Object2World, v.vertex);
-				float3 worldNormal = normalize(mul(transpose((float3x3)_World2Object), v.normal.xyz));
-
-				// Transform vertex in world coordinates to camera coordinates, and pass colour
+				o.worldVertex = mul(_Object2World, v.vertex);
+				o.worldNormal = normalize(mul(transpose((float3x3)_World2Object), v.normal.xyz));
 				o.vertex = mul(UNITY_MATRIX_MVP, v.vertex);
 				o.color = v.color;
-
-				// Pass out the world vertex position and world normal to be interpolated
-				// in the fragment shader (and utilised)
-				o.worldVertex = worldVertex;
-				o.worldNormal = worldNormal;
 
 				return o;
 			}
@@ -177,16 +162,15 @@ Shader "Custom/PhongShader" {
 				// Our interpolated normal might not be of length 1
 				float3 interpNormal = normalize(v.worldNormal);
 
-				float3 dif = 0;
-				float3 spe = 0;
+				float3 dif = float3(0,0,0);
+				float3 spe = float3(0,0,0);
 
-				float fAtt;
+				float fAtt = 1;
 				float3 lightDirection;
 
 				// calculate fAtt
 				if (_WorldSpaceLightPos0.w == 0.0) {
 					// directional light
-					fAtt = 1.0; // no attenuation
 					lightDirection = normalize(_WorldSpaceLightPos0.xyz);
 				} else {
 					// point or spot light

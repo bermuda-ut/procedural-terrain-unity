@@ -23,6 +23,7 @@ public class PointLight : MonoBehaviour {
     void Update() {
         this.transform.RotateAround(rotPoint, Vector3.left, -rotationSpeed*Time.deltaTime);
         float curr = this.transform.localEulerAngles.x;
+        float currY = this.transform.localEulerAngles.y;
 
         if (curr > 180) {
             color -= Color.red*colorShift*Time.deltaTime*1.114f;

@@ -61,8 +61,8 @@
 				float3 dif = fAtt * _PointLightColor.rgb * Kd * v.color.rgb * saturate(LdotN);
 
 				// Calculate specular reflections
-				float Ks = 1;
-				float specN = 5; // Values>>1 give tighter highlights
+				float Ks = 2;
+				float specN = 25; // Values>>1 give tighter highlights
 				float3 V = normalize(_WorldSpaceCameraPos - v.worldVertex.xyz);
 				//float3 R = 2 * dot(L, v.worldNormal) * v.worldNormal - L;
 				float3 H = normalize(V + L);
