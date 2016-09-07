@@ -67,8 +67,8 @@ public class TerrainGenerator : MonoBehaviour {
             MeshFilter terrainMesh = child.AddComponent<MeshFilter>();
             terrainMesh.mesh = meshArr[i];
             MeshRenderer terrainRenderer = child.AddComponent<MeshRenderer>();
-            terrainRenderer.material.shader = Shader.Find("Custom/TerrainShader");
-            child.GetComponent<TerrainHolder>().pointLight = FindObjectOfType<PointLight>().GetComponent<PointLight>();
+            terrainRenderer.material.shader = Shader.Find("Custom/PhongShader");
+            //child.GetComponent<TerrainHolder>().pointLight = FindObjectOfType<PointLight>().GetComponent<PointLight>();
         }
 
     }
