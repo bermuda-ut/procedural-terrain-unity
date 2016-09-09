@@ -112,9 +112,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09287c7f11f61cc4fb46e6ba95d995ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  n: 9
-  xTileSize: 7
-  zTileSize: 7
+  n: 6
+  xTileSize: 35
+  zTileSize: 35
   maxHeight: 1018
   minHeight: -618
   noiseRange: 182
